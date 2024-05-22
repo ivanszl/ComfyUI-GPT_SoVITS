@@ -15,20 +15,18 @@ from .finetune import open1abc,default_batch_size,open1Ba,open1Bb
 i18n = I18nAuto()
 
 parent_directory = os.path.dirname(os.path.abspath(__file__))
-input_path = folder_paths.get_input_directory()
-out_path = folder_paths.get_output_directory()
 language_list = [i18n("中文"), i18n("英文"), i18n("日文"), i18n("中英混合"), i18n("日英混合"), i18n("多语种混合")]
 weights_path = os.path.join(parent_directory,"pretrained_models")
-SoVITS_weight_root = os.path.join(out_path,"sovits_weights")
-os.makedirs(SoVITS_weight_root,exist_ok=True)
-
-GPT_weight_root = os.path.join(out_path,"gpt_weights")
-os.makedirs(GPT_weight_root,exist_ok=True)
-sovits_files = sorted(os.listdir(SoVITS_weight_root),reverse=True)
-        
-gpt_files = sorted(os.listdir(GPT_weight_root),reverse=True)
 
 class GPT_SOVITS_TTS:
+    def __init__(self):
+        self.GPT_weight_root = os.path.join(folder_paths.get_output_directory(),"gpt_weights")
+        os.makedirs(self.GPT_weight_root,exist_ok=True)
+        self.SoVITS_weight_root = os.path.join(folder_paths.get_output_directory(),"sovits_weights")
+        os.makedirs(self.SoVITS_weight_root,exist_ok=True)
+        self.sovits_files = sorted(os.listdir(self.SoVITS_weight_root),reverse=True)
+        self.gpt_files = sorted(os.listdir(self.GPT_weight_root),reverse=True)
+    
     @classmethod
     def INPUT_TYPES(s):
         how_to_cuts = [i18n("不切"), i18n("凑四句一切"), i18n("凑50字一切"), i18n("按中文句号。切"), i18n("按英文句号.切"), i18n("按标点符号切"), ]
@@ -47,8 +45,8 @@ class GPT_SOVITS_TTS:
                      "text_language":(language_list,{
                          "default": i18n("中文")
                      }),
-                     "gpt_weight":(gpt_files,),
-                     "sovits_weight":(sovits_files,),
+                     "gpt_weight":(s.gpt_files,),
+                     "sovits_weight":(s.sovits_files,),
                      "how_to_cut":(how_to_cuts,{
                          "default": i18n("凑四句一切")
                      }),
@@ -91,9 +89,9 @@ class GPT_SOVITS_TTS:
         dot_ = "。" if 'zh' in prompt_language else '.'
         prompt_text = f'{dot_}'.join([sub.content for sub in list(SrtPare(file_content))])
         print(f"prompt_text:{prompt_text}")
-        outfile = os.path.join(out_path, f"{ttime()}_gpt_sovits_tts.wav")
-        gpt_weight = os.path.join(GPT_weight_root, gpt_weight)
-        sovits_weight = os.path.join(SoVITS_weight_root, sovits_weight)
+        outfile = os.path.join(folder_paths.get_output_directory(), f"{ttime()}_gpt_sovits_tts.wav")
+        gpt_weight = os.path.join(self.GPT_weight_root, gpt_weight)
+        sovits_weight = os.path.join(self.SoVITS_weight_root, sovits_weight)
         get_tts_wav(renfer_audio,prompt_text,prompt_language,
             text,text_language,how_to_cut,top_k,top_p,temperature,
             gpt_weight,sovits_weight,outfile)
@@ -101,6 +99,14 @@ class GPT_SOVITS_TTS:
         return (outfile,)
     
 class GPT_SOVITS_INFER:
+    def __init__(self) -> None:
+        self.GPT_weight_root = os.path.join(folder_paths.get_output_directory(),"gpt_weights")
+        os.makedirs(self.GPT_weight_root,exist_ok=True)
+        self.SoVITS_weight_root = os.path.join(folder_paths.get_output_directory(),"sovits_weights")
+        os.makedirs(self.SoVITS_weight_root,exist_ok=True)
+        self.sovits_files = sorted(os.listdir(self.SoVITS_weight_root),reverse=True)
+        self.gpt_files = sorted(os.listdir(self.GPT_weight_root),reverse=True)
+    
     @classmethod
     def INPUT_TYPES(s):
         how_to_cuts = [i18n("不切"), i18n("凑四句一切"), i18n("凑50字一切"), i18n("按中文句号。切"), i18n("按英文句号.切"), i18n("按标点符号切"), ]
@@ -122,8 +128,8 @@ class GPT_SOVITS_INFER:
                      "text_language":(language_list,{
                          "default": i18n("中文")
                      }),
-                     "gpt_weight":(gpt_files,),
-                     "sovits_weight":(sovits_files,),
+                     "gpt_weight":(s.gpt_files,),
+                     "sovits_weight":(s.sovits_files,),
                      "how_to_cut":(how_to_cuts,{
                          "default": i18n("不切")
                      }),
@@ -169,7 +175,7 @@ class GPT_SOVITS_INFER:
         with open(text_srt_path, 'r', encoding="utf-8") as file:
             text_file_content = file.read()
         
-        refer_wav_root = os.path.join(input_path, "gpt_sovits_infer")
+        refer_wav_root = os.path.join(folder_paths.get_input_directory(), "gpt_sovits_infer")
         os.makedirs(refer_wav_root,exist_ok=True)
         audio_path = folder_paths.get_annotated_filepath(renfer_audio)
         audio_seg = AudioSegment.from_file(audio_path)
@@ -191,14 +197,14 @@ class GPT_SOVITS_INFER:
                 speaker_name = f"speaker_{text[0]}"
                 text = text[1:]
                 refer_text = refer_text[1:]
-                gpt_weight = sorted([f for f in os.listdir(GPT_weight_root) if speaker_name in f], key=lambda x:x[-8:-5])[-1]
-                gpt_weight = os.path.join(GPT_weight_root, gpt_weight)
-                sovits_weight = sorted([f for f in os.listdir(SoVITS_weight_root) if speaker_name in f])[-1]
-                sovits_weight = os.path.join(SoVITS_weight_root, sovits_weight)
+                gpt_weight = sorted([f for f in os.listdir(self.GPT_weight_root) if speaker_name in f], key=lambda x:x[-8:-5])[-1]
+                gpt_weight = os.path.join(self.GPT_weight_root, gpt_weight)
+                sovits_weight = sorted([f for f in os.listdir(self.SoVITS_weight_root) if speaker_name in f])[-1]
+                sovits_weight = os.path.join(self.SoVITS_weight_root, sovits_weight)
                 print(f"gpt_weight:\t{gpt_weight}\nsovits_weight:\t{sovits_weight}")
             else:
-                gpt_weight = os.path.join(GPT_weight_root, gpt_weight)
-                sovits_weight = os.path.join(SoVITS_weight_root, sovits_weight)
+                gpt_weight = os.path.join(self.GPT_weight_root, gpt_weight)
+                sovits_weight = os.path.join(self.SoVITS_weight_root, sovits_weight)
         
             get_tts_wav(refer_wav,refer_text,prompt_language,
                 text,text_language,how_to_cut,top_k,top_p,temperature,
@@ -228,7 +234,7 @@ class GPT_SOVITS_INFER:
           
             new_audio_seg += tmp_audio
 
-        infer_audio = os.path.join(out_path, f"{ttime()}_gpt_sovits_refer.wav")
+        infer_audio = os.path.join(folder_paths.get_output_directory(), f"{ttime()}_gpt_sovits_refer.wav")
         new_audio_seg.export(infer_audio, format="wav")
         
         return (infer_audio,)
@@ -276,6 +282,12 @@ def get_files(end_with="pth",model_type="D"):
     return file_list
 
 class GPT_SOVITS_FT:
+    def __init__(self) -> None:
+        self.GPT_weight_root = os.path.join(folder_paths.get_output_directory(),"gpt_weights")
+        os.makedirs(self.GPT_weight_root,exist_ok=True)
+        self.SoVITS_weight_root = os.path.join(folder_paths.get_output_directory(),"sovits_weights")
+        os.makedirs(self.SoVITS_weight_root,exist_ok=True)
+
     @classmethod
     def INPUT_TYPES(s):
         ft_language_list = ["zh", "en", "ja"]
@@ -438,13 +450,13 @@ class GPT_SOVITS_FT:
                     exp_name=exp_name,text_low_lr_rate=text_low_lr_rate,
                     if_save_latest=if_save_latest_sovits,if_save_every_weights=if_save_every_sovits_weights,
                     save_every_epoch=sovits_save_every_epoch,pretrained_s2G=pretrained_s2G,
-                    pretrained_s2D=pretrained_s2D,work_path=work_path)
+                    pretrained_s2D=pretrained_s2D,work_path=work_path,save_weight_root=self.SoVITS_weight_root)
             import gc;gc.collect();torch.cuda.empty_cache()
             open1Bb(batch_size=gpt_batch_size,total_epoch=gpt_total_epoch,exp_name=exp_name,
                     if_dpo=if_dpo,if_save_latest=if_save_latest_gpt,if_save_every_weights=if_save_every_gpt_weights,
-                    save_every_epoch=gpt_save_every_epoch,pretrained_s1=pretrained_s1,work_path=work_path)
+                    save_every_epoch=gpt_save_every_epoch,pretrained_s1=pretrained_s1,work_path=work_path, save_weight_root=self.GPT_weight_root)
             import gc;gc.collect();torch.cuda.empty_cache()
-        return {"ui":{"finetune":[SoVITS_weight_root,GPT_weight_root]}}
+        return {"ui":{"finetune":[self.SoVITS_weight_root,self.GPT_weight_root]}}
 
 
 class PreViewAudio:
@@ -472,7 +484,7 @@ class PreViewAudio:
 class LoadAudio:
     @classmethod
     def INPUT_TYPES(s):
-        files = [f for f in os.listdir(input_path) if os.path.isfile(os.path.join(input_path, f)) and f.split('.')[-1] in ["wav", "mp3","WAV","flac","m4a"]]
+        files = [f for f in os.listdir(folder_paths.get_input_directory()) if os.path.isfile(os.path.join(folder_paths.get_input_directory(), f)) and f.split('.')[-1] in ["wav", "mp3","WAV","flac","m4a"]]
         return {"required":
                     {"audio": (sorted(files),)},
                 }
@@ -489,7 +501,7 @@ class LoadAudio:
 class LoadSRT:
     @classmethod
     def INPUT_TYPES(s):
-        files = [f for f in os.listdir(input_path) if os.path.isfile(os.path.join(input_path, f)) and f.split('.')[-1] in ["srt", "txt"]]
+        files = [f for f in os.listdir(folder_paths.get_input_directory()) if os.path.isfile(os.path.join(folder_paths.get_input_directory(), f)) and f.split('.')[-1] in ["srt", "txt"]]
         return {"required":
                     {"srt": (sorted(files),)},
                 }

@@ -2,13 +2,11 @@ import os
 import torch
 import psutil
 import traceback
-import folder_paths
 import platform,signal
 from config import python_exec
 from tools import my_utils
 from subprocess import Popen
 from .inference import is_half,bert_path,parent_directory,cnhubert_base_path
-out_path = folder_paths.get_output_directory()
 if_gpu_ok = False
 ngpu = torch.cuda.device_count()
 gpu_infos = []
@@ -203,9 +201,9 @@ gpu_numbers1Bb = "%s" % (gpus)
 import json
 import yaml
 p_train_SoVITS=None
-def open1Ba(batch_size,total_epoch,exp_name,text_low_lr_rate,if_save_latest,if_save_every_weights,save_every_epoch,pretrained_s2G,pretrained_s2D,work_path):
-    SoVITS_weight_root = os.path.join(out_path,"sovits_weights")
-    os.makedirs(SoVITS_weight_root, exist_ok=True)
+def open1Ba(batch_size,total_epoch,exp_name,text_low_lr_rate,if_save_latest,if_save_every_weights,save_every_epoch,pretrained_s2G,pretrained_s2D,work_path, save_weight_root):
+    # SoVITS_weight_root = os.path.join(folder_paths.get_output_directory(),"sovits_weights")
+    # os.makedirs(SoVITS_weight_root, exist_ok=True)
     global p_train_SoVITS
     if(p_train_SoVITS==None):
         with open(f"{root_py_path}/configs/s2.json")as f:
@@ -226,7 +224,7 @@ def open1Ba(batch_size,total_epoch,exp_name,text_low_lr_rate,if_save_latest,if_s
         data["train"]["save_every_epoch"]=save_every_epoch
         data["train"]["gpu_numbers"]=gpu_numbers1Ba
         data["data"]["exp_dir"]=data["s2_ckpt_dir"]=s2_dir
-        data["save_weight_dir"]=SoVITS_weight_root
+        data["save_weight_dir"]=save_weight_root
         data["name"]=exp_name
         tmp_config_path="%s/tmp_s2.json"%s2_dir
         with open(tmp_config_path,"w")as f:f.write(json.dumps(data))
@@ -250,8 +248,8 @@ def close1Ba():
 
 p_train_GPT=None
 gpu_numbers = "%s" % (gpus)
-def open1Bb(batch_size,total_epoch,exp_name,if_dpo,if_save_latest,if_save_every_weights,save_every_epoch,pretrained_s1,work_path):
-    GPT_weight_root = os.path.join(out_path,"gpt_weights")
+def open1Bb(batch_size,total_epoch,exp_name,if_dpo,if_save_latest,if_save_every_weights,save_every_epoch,pretrained_s1,work_path, save_weight_root):
+    # GPT_weight_root = os.path.join(folder_paths.get_output_directory(),"gpt_weights")
     global p_train_GPT
     if(p_train_GPT==None):
         with open(f"{root_py_path}/configs/s1longer.yaml")as f:
@@ -269,7 +267,7 @@ def open1Bb(batch_size,total_epoch,exp_name,if_dpo,if_save_latest,if_save_every_
         data["train"]["if_save_every_weights"]=if_save_every_weights
         data["train"]["if_save_latest"]=if_save_latest
         data["train"]["if_dpo"]=if_dpo
-        data["train"]["half_weights_save_dir"]=GPT_weight_root
+        data["train"]["half_weights_save_dir"]=save_weight_root
         data["train"]["exp_name"]=exp_name
         data["train_semantic_path"]="%s/6-name2semantic.tsv"%s1_dir
         data["train_phoneme_path"]="%s/2-name2text.txt"%s1_dir
