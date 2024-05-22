@@ -18,14 +18,16 @@ parent_directory = os.path.dirname(os.path.abspath(__file__))
 language_list = [i18n("中文"), i18n("英文"), i18n("日文"), i18n("中英混合"), i18n("日英混合"), i18n("多语种混合")]
 weights_path = os.path.join(parent_directory,"pretrained_models")
 
+def get_weights_files(t:str):
+    weight_root = os.path.join(folder_paths.get_output_directory(), t)
+    return sorted(os.listdir(weight_root),reverse=True)
+
 class GPT_SOVITS_TTS:
     def __init__(self):
         self.GPT_weight_root = os.path.join(folder_paths.get_output_directory(),"gpt_weights")
         os.makedirs(self.GPT_weight_root,exist_ok=True)
         self.SoVITS_weight_root = os.path.join(folder_paths.get_output_directory(),"sovits_weights")
         os.makedirs(self.SoVITS_weight_root,exist_ok=True)
-        self.sovits_files = sorted(os.listdir(self.SoVITS_weight_root),reverse=True)
-        self.gpt_files = sorted(os.listdir(self.GPT_weight_root),reverse=True)
     
     @classmethod
     def INPUT_TYPES(s):
@@ -45,8 +47,8 @@ class GPT_SOVITS_TTS:
                      "text_language":(language_list,{
                          "default": i18n("中文")
                      }),
-                     "gpt_weight":(s.gpt_files,),
-                     "sovits_weight":(s.sovits_files,),
+                     "gpt_weight":(get_weights_files('gpt_weights'),),
+                     "sovits_weight":(get_weights_files('sovits_weights'),),
                      "how_to_cut":(how_to_cuts,{
                          "default": i18n("凑四句一切")
                      }),
@@ -104,8 +106,6 @@ class GPT_SOVITS_INFER:
         os.makedirs(self.GPT_weight_root,exist_ok=True)
         self.SoVITS_weight_root = os.path.join(folder_paths.get_output_directory(),"sovits_weights")
         os.makedirs(self.SoVITS_weight_root,exist_ok=True)
-        self.sovits_files = sorted(os.listdir(self.SoVITS_weight_root),reverse=True)
-        self.gpt_files = sorted(os.listdir(self.GPT_weight_root),reverse=True)
     
     @classmethod
     def INPUT_TYPES(s):
@@ -128,8 +128,8 @@ class GPT_SOVITS_INFER:
                      "text_language":(language_list,{
                          "default": i18n("中文")
                      }),
-                     "gpt_weight":(s.gpt_files,),
-                     "sovits_weight":(s.sovits_files,),
+                     "gpt_weight":(get_weights_files('gpt_weights'),),
+                     "sovits_weight":(get_weights_files('sovits_weights'),),
                      "how_to_cut":(how_to_cuts,{
                          "default": i18n("不切")
                      }),
