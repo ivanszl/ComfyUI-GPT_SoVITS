@@ -20,6 +20,7 @@ weights_path = os.path.join(parent_directory,"pretrained_models")
 
 def get_weights_files(t:str):
     weight_root = os.path.join(folder_paths.get_output_directory(), t)
+    os.makedirs(weight_root, exist_ok=True)
     return sorted(os.listdir(weight_root),reverse=True)
 
 class GPT_SOVITS_TTS:
