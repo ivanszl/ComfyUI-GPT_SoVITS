@@ -43,9 +43,9 @@ from .nodes import LoadSRT,LoadAudio, GPT_SOVITS_INFER, PreViewAudio,GPT_SOVITS_
 # NOTE: names should be globally unique
 NODE_CLASS_MAPPINGS = {
     "GPT_SOVITS_FT": GPT_SOVITS_FT,
-    "LoadAudio": LoadAudio,
-    "PreViewAudio": PreViewAudio,
-    "LoadSRT": LoadSRT,
+    "GPT_SOVITS_LoadAudio": LoadAudio,
+    "GPT_SOVITS_PreViewAudio": PreViewAudio,
+    "GPT_SOVITS_LoadSRT": LoadSRT,
     "GPT_SOVITS_INFER": GPT_SOVITS_INFER,
     "GPT_SOVITS_TTS": GPT_SOVITS_TTS
 }
@@ -53,9 +53,9 @@ NODE_CLASS_MAPPINGS = {
 # A dictionary that contains the friendly/humanly readable titles for the nodes
 NODE_DISPLAY_NAME_MAPPINGS = {
     "GPT_SOVITS_FT": "GPT_SOVITS Finetune",
-    "LoadAudio": "AudioLoader",
-    "PreViewAudio": "PreView Audio",
-    "LoadSRT": "SRT FILE Loader",
+    "GPT_SOVITS_LoadAudio": "Audio File Loader",
+    "GPT_SOVITS_PreViewAudio": "Audio File PreView",
+    "GPT_SOVITS_LoadSRT": "SRT FILE Loader",
     "GPT_SOVITS_INFER": "GPT_SOVITS Inference",
     "GPT_SOVITS_TTS": "GPT_SOVITS TTS"
 }

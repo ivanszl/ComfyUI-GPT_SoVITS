@@ -35,7 +35,7 @@ class GPT_SOVITS_TTS:
         
         return {"required":
                     {
-                     "renfer_audio":("AUDIO",),
+                     "renfer_audio":("AUDIO_FILE",),
                      "refer_srt":("SRT",),
                      "refer_language":(language_list,{
                          "default": i18n("中文")
@@ -76,7 +76,7 @@ class GPT_SOVITS_TTS:
                     }
                 }
     CATEGORY = "AIFSH_GPT_SOVITS"
-    RETURN_TYPES = ('AUDIO',)
+    RETURN_TYPES = ('AUDIO_FILE',)
     OUTPUT_NODE = False
 
     FUNCTION = "get_tts_wav"
@@ -107,7 +107,7 @@ class GPT_SOVITS_INFER:
         
         return {"required":
                     {
-                     "renfer_audio":("AUDIO",),
+                     "renfer_audio":("AUDIO_FILE",),
                      "refer_srt":("SRT",),
                      "if_aliginment":("BOOLEAN",{
                          "default": False
@@ -151,7 +151,7 @@ class GPT_SOVITS_INFER:
                     }
                 }
     CATEGORY = "AIFSH_GPT_SOVITS"
-    RETURN_TYPES = ('AUDIO',)
+    RETURN_TYPES = ('AUDIO_FILE',)
     OUTPUT_NODE = False
 
     FUNCTION = "get_tts_wav"
@@ -280,7 +280,7 @@ class GPT_SOVITS_FT:
     def INPUT_TYPES(s):
         ft_language_list = ["zh", "en", "ja"]
         return {"required":
-                    {"audio": ("AUDIO",),
+                    {"audio": ("AUDIO_FILE",),
                      "srt": ("SRT",),
                      "exp_name": ("STRING",{
                          "default": "auto"
@@ -451,7 +451,7 @@ class PreViewAudio:
     @classmethod
     def INPUT_TYPES(s):
         return {"required":
-                    {"audio": ("AUDIO",),}
+                    {"audio": ("AUDIO_FILE",),}
                 }
 
     CATEGORY = "AIFSH_GPT_SOVITS"
@@ -479,7 +479,7 @@ class LoadAudio:
 
     CATEGORY = "AIFSH_GPT_SOVITS"
 
-    RETURN_TYPES = ("AUDIO",)
+    RETURN_TYPES = ("AUDIO_FILE",)
     FUNCTION = "load_audio"
 
     def load_audio(self, audio):
