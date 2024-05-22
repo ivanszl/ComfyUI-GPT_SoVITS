@@ -101,17 +101,17 @@ function pathRefresh(node, inputName, inputData, app) {
 
     return { widget: refreshWidget };
 }
-ComfyWidgets.PATHREFRESH = pathRefresh;
+// ComfyWidgets.PATHREFRESH = pathRefresh;
 
-app.registerExtension({
-	name: "GPT_SOVITS.RefreshPath",
-	async beforeRegisterNodeDef(nodeType, nodeData, app) {
-		if (nodeData?.name == "GPT_SOVITS_TTS") {
-			nodeData.input.required.upload = ["PATHREFRESH"];
-		}
+// app.registerExtension({
+// 	name: "GPT_SOVITS.RefreshPath",
+// 	async beforeRegisterNodeDef(nodeType, nodeData, app) {
+// 		if (nodeData?.name == "GPT_SOVITS_TTS") {
+// 			nodeData.input.required.upload = ["PATHREFRESH"];
+// 		}
 
-        if (nodeData?.name == "GPT_SOVITS_INFER") {
-			nodeData.input.required.upload = ["PATHREFRESH"];
-		}
-	},
-});
+//         if (nodeData?.name == "GPT_SOVITS_INFER") {
+// 			nodeData.input.required.upload = ["PATHREFRESH"];
+// 		}
+// 	},
+// });
