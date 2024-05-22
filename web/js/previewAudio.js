@@ -145,7 +145,7 @@ function previewAudio(node,file,type){
 app.registerExtension({
 	name: "GPT_SOVITS.AudioPreviewer",
 	async beforeRegisterNodeDef(nodeType, nodeData, app) {
-		if (nodeData?.name == "PreViewAudio") {
+		if (nodeData?.name == "GPT_SOVITS_PreViewAudio") {
 			nodeType.prototype.onExecuted = function (data) {
 				previewAudio(this, data.audio[0], data.audio[1]);
 			}
