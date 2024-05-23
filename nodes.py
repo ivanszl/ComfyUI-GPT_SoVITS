@@ -515,3 +515,16 @@ class LoadSRT:
     def load_srt(self, srt):
         srt_path = folder_paths.get_annotated_filepath(srt)
         return (srt_path,)
+class ConvertAudioPathToStr:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required":
+            {"audio_file": ("AUDIO_FILE",)},
+        }
+    CATEGORY = "AIFSH_GPT_SOVITS"
+
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "convert"
+    
+    def convert(self, audio_file):
+        return (str(audio_file),)

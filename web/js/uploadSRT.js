@@ -104,7 +104,7 @@ ComfyWidgets.SRTPLOAD = srtUpload;
 app.registerExtension({
 	name: "GPT_SOVITS.UploadSRT",
 	async beforeRegisterNodeDef(nodeType, nodeData, app) {
-		if (nodeData?.name == "LoadSRT") {
+		if (nodeData?.name == "GPT_SOVITS_LoadSRT") {
 			nodeData.input.required.upload = ["SRTPLOAD"];
 		}
 	},

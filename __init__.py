@@ -34,7 +34,7 @@ else:
     print("GPT_SoVITS use cache models,make sure your 'pretrained_models' complete")
 
 WEB_DIRECTORY = "./web"
-from .nodes import LoadSRT,LoadAudio, GPT_SOVITS_INFER, PreViewAudio,GPT_SOVITS_FT, GPT_SOVITS_TTS
+from .nodes import LoadSRT,LoadAudio, GPT_SOVITS_INFER, PreViewAudio,GPT_SOVITS_FT, GPT_SOVITS_TTS, ConvertAudioPathToStr
 
 # Set the web directory, any .js file in that directory will be loaded by the frontend as a frontend extension
 # WEB_DIRECTORY = "./somejs"
@@ -47,7 +47,8 @@ NODE_CLASS_MAPPINGS = {
     "GPT_SOVITS_PreViewAudio": PreViewAudio,
     "GPT_SOVITS_LoadSRT": LoadSRT,
     "GPT_SOVITS_INFER": GPT_SOVITS_INFER,
-    "GPT_SOVITS_TTS": GPT_SOVITS_TTS
+    "GPT_SOVITS_TTS": GPT_SOVITS_TTS,
+    "GPT_SOVITS_Reroute": ConvertAudioPathToStr,
 }
 
 # A dictionary that contains the friendly/humanly readable titles for the nodes
@@ -57,7 +58,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "GPT_SOVITS_PreViewAudio": "Audio File PreView",
     "GPT_SOVITS_LoadSRT": "SRT FILE Loader",
     "GPT_SOVITS_INFER": "GPT_SOVITS Inference",
-    "GPT_SOVITS_TTS": "GPT_SOVITS TTS"
+    "GPT_SOVITS_TTS": "GPT_SOVITS TTS",
+    "GPT_SOVITS_ReRoute": 'GPT_SOVITS Reroute'
 }
 
 @PromptServer.instance.routes.get("/gpt_sovits/reboot")
